@@ -1,5 +1,6 @@
 package com.example.administrator.weathertest.activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -63,6 +64,28 @@ public class WeatherActivity extends AppCompatActivity {
         temp1Text = (TextView) findViewById(R.id.temp1);
         temp2Text = (TextView) findViewById(R.id.temp2);
         currentDateText = (TextView) findViewById(R.id.current_date);
+        switchCity=(Button)findViewById(R.id.switch_city);
+        switchCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(WeatherActivity.this,ChooseAreaActivity.class);
+                intent.putExtra("from_weather_activity",true);
+                startActivity(intent);
+                finish();
+            }
+        });
+        refreshWeather=(Button)findViewById(R.id.refresh_weather);
+        refreshWeather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                publishText.setText("同步中...");
+                SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(WeatherActivity.this);
+                String weatherCode=sharedPreferences.getString("weather_code","");
+                if (!TextUtils.isEmpty(weatherCode)){
+                    queryWeatherInfo(weatherCode);
+                }
+            }
+        });
 
         String countyCode = getIntent().getStringExtra("county_code");
         if (!TextUtils.isEmpty(countyCode)) {
